@@ -17,10 +17,8 @@ jobs:
           node-version: '22'
       - name: Install dependencies
         run: npm ci
-      - name: Run Vitest unit tests
-        run: npm run test
-      - name: Generate coverage report
-        run: npm run test:coverage
+      - name: 'Test'
+        run: npx vitest --coverage.enabled true
       - name: 'Report Coverage'
         uses:  davelosert/vitest-coverage-report-action@v2
 
