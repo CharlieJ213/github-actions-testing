@@ -21,11 +21,8 @@ jobs:
         run: npm run test
       - name: Generate coverage report
         run: npm run test:coverage
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: coverage/
+      - name: 'Report Coverage'
+        uses:  davelosert/vitest-coverage-report-action@v2
 
   build-docker:
     needs: unit-tests
@@ -44,8 +41,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Start Docker container
+        run: docker run -d -p 8080:80 --name myapp myapp:latest
+      - name: Wait for Docker container to be ready
+        run: |
+          until curl -s http://localhost:8080 > /dev/null; do
+            echo "Waiting for Docker container to be ready..."
+            sleep 5
+          done
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:
           browser: chrome
           command: npm run cypress:run
+        env:
+          CYPRESS_baseUrl: http://localhost:8080
