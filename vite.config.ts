@@ -10,7 +10,7 @@ export default defineConfig({
     globals: true,
     setupFiles: ['./src/setupTests.ts'],
     coverage: {
-      reporter: ['text', 'json-summary'],
+      reporter: ['text', 'json-summary', 'json', 'html'],
     }
   },
 })
