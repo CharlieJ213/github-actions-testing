@@ -9,3 +9,7 @@ on:
 jobs:
   build-test-scan-web:
     uses: ./.github/workflows/build-test-scan-web.yml
+    permissions:
+      contents: read
+      pull-requests: write
+      packages: write
