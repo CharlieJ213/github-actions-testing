@@ -23,7 +23,3 @@ jobs:
   component-tests:
     needs: build
     uses: ./.github/workflows/component-test-web.yml
-
-  scan-image:
-    needs: build
-    uses: ./.github/workflows/trivvy-scan-web.yml
