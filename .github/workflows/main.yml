@@ -8,4 +8,4 @@ on:
 
 jobs:
   build-test-scan-web:
-    uses: ./templates/build-test-scan-web.yml@main
+    uses: ./.github/workflows/templates/build-test-scan-web.yml@main
