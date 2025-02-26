@@ -1,0 +1,41 @@
+name: component-test-web-docker
+
+on:
+  workflow_call:
+
+jobs:
+          
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Generate Image Name
+        run: |
+          echo "IMAGE_NAME=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
+      
+      - name: Pull and run Docker image
+        run: |
+          docker pull ghcr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          docker run -d -p 8080:80 --name myapp ghcr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
+      
+      - name: Wait for Docker container to be ready
+        run: |
+          until curl -s http://localhost:8080 > /dev/null; do
+            echo "Waiting for Docker container to be ready..."
+            sleep 5
+          done
+      
+      - name: Cypress run
+        uses: cypress-io/github-action@v6
+        with:
+          browser: chrome
+          command: npm run cypress:run
+        env:
+          CYPRESS_baseUrl: http://localhost:8080

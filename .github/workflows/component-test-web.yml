@@ -1,4 +1,4 @@
-name: build-test-scan-web
+name: component-test-web
 
 on:
   workflow_call:
@@ -6,32 +6,27 @@ on:
 jobs:
           
   test:
+    needs: build
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
+      # Get dist artifact, extract and serve it
+      - name: Get dist artifact
+        uses: actions/download-artifact@v2
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Generate Image Name
-        run: |
-          echo "IMAGE_NAME=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
-      
-      - name: Pull and run Docker image
-        run: |
-          docker pull ghcr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
-          docker run -d -p 8080:80 --name myapp ghcr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
-      
-      - name: Wait for Docker container to be ready
+          name: dist
+      - name: Extract dist artifact
+        run: tar -xvf dist.tar.gz
+      - name: Serve dist artifact
+        run: npx serve dist -s -l 8080 &
+      # Wait for the server to be ready
+      - name: Wait for server to be ready
         run: |
           until curl -s http://localhost:8080 > /dev/null; do
-            echo "Waiting for Docker container to be ready..."
+            echo "Waiting for server to be ready..."
             sleep 5
           done
-      
+      # Run Cypress tests
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:

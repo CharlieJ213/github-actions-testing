@@ -21,6 +21,10 @@ jobs:
           node-version: '22'
       - name: Install dependencies
         run: npm ci
+      # Linting stage
+      - name: Lint
+        run: npm run lint
+      # Unit test stage
       - name: 'Test'
         run: npx vitest --coverage.enabled true
       - name: 'Report Coverage'
