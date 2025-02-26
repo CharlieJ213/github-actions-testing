@@ -4,7 +4,7 @@ on:
   workflow_call:
 
 jobs:
-  unit-tests:
+  test:
     runs-on: ubuntu-latest
 
     permissions:

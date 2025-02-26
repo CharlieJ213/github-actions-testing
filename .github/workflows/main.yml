@@ -13,14 +13,14 @@ jobs:
       contents: read
       pull-requests: write
 
-  build-and-push-docker:
+  build:
     needs: unit-tests
     uses: ./.github/workflows/build-web.yml
     permissions:
       contents: read
       packages: write
           
-  cypress-tests:
+  component-tests:
     needs: build-and-push-docker
     uses: ./.github/workflows/component-test-web.yml
 
