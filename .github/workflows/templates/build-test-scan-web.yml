@@ -1,0 +1,17 @@
+name: build-test-scan-web
+
+jobs:
+  unit-tests:
+    uses: ./unit-test-web.yml@main
+
+  build-and-push-docker:
+    needs: unit-tests
+    uses: ./build-web.yml@main
+          
+  cypress-tests:
+    needs: build-and-push-docker
+    uses: ./component-test-web.yml@main
+
+  scan-image:
+    needs: build-and-push-docker
+    uses: ./trivvy-scan-web.yml@main
