@@ -1,5 +1,8 @@
 name: build-test-scan-web
 
+on:
+  workflow_call:
+
 jobs:
 
   build-and-push-docker:

@@ -1,5 +1,8 @@
 name: unit-test-web
 
+on:
+  workflow_call:
+
 jobs:
   unit-tests:
     runs-on: ubuntu-latest

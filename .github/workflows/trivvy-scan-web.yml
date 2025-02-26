@@ -1,5 +1,8 @@
 name: trivvy-scan-web
 
+on:
+  workflow_call:
+  
 jobs:
   scan-image:
     runs-on: ubuntu-latest
