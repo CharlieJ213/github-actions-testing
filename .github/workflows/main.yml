@@ -21,9 +21,9 @@ jobs:
       packages: write
           
   component-tests:
-    needs: build-and-push-docker
+    needs: build
     uses: ./.github/workflows/component-test-web.yml
 
   scan-image:
-    needs: build-and-push-docker
+    needs: build
     uses: ./.github/workflows/trivvy-scan-web.yml
