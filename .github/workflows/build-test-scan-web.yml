@@ -5,16 +5,16 @@ on:
 
 jobs:
   unit-tests:
-    uses: ./unit-test-web.yml@main
+    uses: ./.github/workflows/unit-test-web.yml
 
   build-and-push-docker:
     needs: unit-tests
-    uses: ./build-web.yml@main
+    uses: ./.github/workflows/build-web.yml
           
   cypress-tests:
     needs: build-and-push-docker
-    uses: ./component-test-web.yml@main
+    uses: ./.github/workflows/component-test-web.yml
 
   scan-image:
     needs: build-and-push-docker
-    uses: ./trivvy-scan-web.yml@main
+    uses: ./.github/workflows/trivvy-scan-web.yml
