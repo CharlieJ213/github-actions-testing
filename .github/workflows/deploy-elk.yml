@@ -26,4 +26,6 @@ jobs:
 
     - name: Deploy ELK Stack
       run: |
-        ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_INSTANCE_IP }} 'bash -s' < ./scripts/deploy_elk.sh || exit 1
+        echo "${{ secrets.EC2_SSH_KEY }}" > ec2_key.pem || exit 1
+        chmod 400 ec2_key.pem
+        ssh -i ec2_key.pem ec2-user@${{ secrets.EC2_INSTANCE_IP }} 'bash -s' < ./scripts/deploy_elk.sh || exit 1
