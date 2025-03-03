@@ -36,8 +36,8 @@ jobs:
         
         if [ $? -eq 0 ]; then
           echo "SSH connection test passed. Proceeding with deployment..."
-          ssh -i ec2_key.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ec2-user@${{ secrets.EC2_INSTANCE_IP }} < ./logstash.conf
-          ssh -i ec2_key.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ec2-user@${{ secrets.EC2_INSTANCE_IP }} < ./docker-compose.yml
+          scp -i ec2_key.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ./logstash.conf ec2-user@${{ secrets.EC2_INSTANCE_IP }}:/home/ec2-user/
+          scp -i ec2_key.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ./docker-compose.yml ec2-user@${{ secrets.EC2_INSTANCE_IP }}:/home/ec2-user/
           ssh -i ec2_key.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ec2-user@${{ secrets.EC2_INSTANCE_IP }} 'bash -s' < ./scripts/deploy_elk.sh
         else
           echo "SSH connection test failed. Exiting."
