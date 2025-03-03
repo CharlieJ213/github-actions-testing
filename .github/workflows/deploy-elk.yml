@@ -1,0 +1,29 @@
+name: Deploy ELK Stack
+
+on:
+  push:
+    branches:
+      - develop
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: arn:aws:iam::216989131346:role/GithubActions_EC2_S3_Role
+        aws-region: eu-west-2
+
+    - name: Deploy ELK Stack
+      run: |
+        ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_INSTANCE_IP }} 'bash -s' < ./scripts/deploy_elk.sh || exit 1
