@@ -1,9 +1,6 @@
 name: Deploy ELK Stack
 
 on:
-  push:
-    branches:
-      - develop
   workflow_dispatch:
 
 permissions:
