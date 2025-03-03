@@ -27,3 +27,9 @@ jobs:
     permissions:
       contents: read
       id-token: write
+
+  deploy-to-app-runner:
+    needs: component-tests
+    uses: ./.github/workflows/publish-build-to-app-runner.yml
+    permissions:
+      id-token: write
