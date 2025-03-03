@@ -30,4 +30,4 @@ jobs:
           cpu: 1
           memory: 2
           port: 80
-          wait-for-service-stability-seconds: 120
+          wait-for-service-stability-seconds: 600
