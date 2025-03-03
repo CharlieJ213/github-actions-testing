@@ -2,11 +2,21 @@ name: build-web-docker
 
 on:
   workflow_call:
+    inputs:
+      environment:
+        type: string
+        description: 'The environment to deploy to'
+        required: true
+      app-runner-service-name:
+        type: string
+        description: 'The name of the App Runner service'
+        required: true
 
 jobs:
 
   deploy:
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
     permissions:
       id-token: write
     steps:
@@ -24,7 +34,7 @@ jobs:
         uses: awslabs/amazon-app-runner-deploy@main
         with:
           access-role-arn: arn:aws:iam::216989131346:role/service-role/AppRunnerECRAccessRole
-          service: github-actions-testing-service
+          service: ${{ inputs.app-runner-service-name }}
           image: ${{ steps.login-ecr.outputs.registry }}/github-actions-testing/containers:${{ github.sha }}
           region: eu-west-2
           cpu: 1

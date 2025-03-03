@@ -1,0 +1,45 @@
+name: Deployment Pipeline
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  unit-tests:
+    uses: ./.github/workflows/unit-test-web.yml
+    permissions:
+      contents: read
+      pull-requests: write
+
+  build:
+    needs: unit-tests
+    uses: ./.github/workflows/build-web-docker.yml
+    permissions:
+      contents: read
+      id-token: write
+      security-events: write
+          
+  component-tests:
+    needs: build
+    uses: ./.github/workflows/component-test-web-docker.yml
+    permissions:
+      contents: read
+      id-token: write
+
+  deploy-to-staging:
+    needs: component-tests
+    uses: ./.github/workflows/publish-build-to-app-runner.yml
+    permissions:
+      id-token: write
+    with:
+      environment: 'staging'
+      app-runner-service-name: 'github-actions-testing-service'
+  
+  deploy-to-production:
+    needs: component-tests
+    uses: ./.github/workflows/publish-build-to-app-runner.yml
+    permissions:
+      id-token: write
+    with:
+      environment: 'production'
+      app-runner-service-name: 'github-actions-testing-service'
