@@ -19,6 +19,7 @@ jobs:
     permissions:
       contents: read
       id-token: write
+      security-events: write
           
   component-tests:
     needs: build
