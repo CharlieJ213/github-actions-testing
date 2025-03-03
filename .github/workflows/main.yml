@@ -15,11 +15,14 @@ jobs:
 
   build:
     needs: unit-tests
-    uses: ./.github/workflows/build-web.yml
+    uses: ./.github/workflows/build-web-docker.yml
     permissions:
       contents: read
-      packages: write
+      id-token: write
           
   component-tests:
     needs: build
-    uses: ./.github/workflows/component-test-web.yml
+    uses: ./.github/workflows/component-test-web-docker.yml
+    permissions:
+      contents: read
+      id-token: write
