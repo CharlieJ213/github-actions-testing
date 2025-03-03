@@ -32,7 +32,7 @@ jobs:
         echo "SSH key setup complete."
         
         echo "Testing SSH connection..."
-        ssh -i ec2_key.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -vvv ec2-user@${{ secrets.EC2_INSTANCE_IP }} 'echo "SSH connection successful"'
+        ssh -i ec2_key.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ec2-user@${{ secrets.EC2_INSTANCE_IP }} 'echo "SSH connection successful"'
         
         if [ $? -eq 0 ]; then
           echo "SSH connection test passed. Proceeding with deployment..."
@@ -41,4 +41,3 @@ jobs:
           echo "SSH connection test failed. Exiting."
           exit 1
         fi
-      
