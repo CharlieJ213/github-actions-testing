@@ -26,6 +26,19 @@ jobs:
 
     - name: Deploy ELK Stack
       run: |
-        echo "${{ secrets.EC2_SSH_KEY }}" > ec2_key.pem || exit 1
-        chmod 400 ec2_key.pem
-        ssh -i ec2_key.pem ec2-user@${{ secrets.EC2_INSTANCE_IP }} 'bash -s' < ./scripts/deploy_elk.sh || exit 1
+        echo "Setting up SSH key..."
+        echo "${{ secrets.EC2_SSH_KEY }}" > ec2_key.pem
+        chmod 600 ec2_key.pem
+        echo "SSH key setup complete."
+        
+        echo "Testing SSH connection..."
+        ssh -i ec2_key.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -vvv ec2-user@${{ secrets.EC2_INSTANCE_IP }} 'echo "SSH connection successful"'
+        
+        if [ $? -eq 0 ]; then
+          echo "SSH connection test passed. Proceeding with deployment..."
+          ssh -i ec2_key.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ec2-user@${{ secrets.EC2_INSTANCE_IP }} 'bash -s' < ./scripts/deploy_elk.sh
+        else
+          echo "SSH connection test failed. Exiting."
+          exit 1
+        fi
+      
