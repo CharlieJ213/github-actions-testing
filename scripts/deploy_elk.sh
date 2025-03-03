@@ -3,48 +3,29 @@
 # Update the system
 sudo yum update -y
 
-# Install Java (Amazon Corretto 11)
-sudo yum install -y java-11-amazon-corretto
+# Install Docker
+sudo amazon-linux-extras install docker -y
+sudo systemctl start docker
+sudo systemctl enable docker
 
-# Add Elastic's GPG key and repository
-sudo rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
-sudo tee /etc/yum.repos.d/elasticsearch.repo > /dev/null <<EOF
-[elasticsearch]
-name=Elasticsearch repository for 7.x packages
-baseurl=https://artifacts.elastic.co/packages/7.x/yum
-gpgcheck=1
-gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
-enabled=1
-autorefresh=1
-type=rpm-md
-EOF
+# Add ec2-user to the docker group to run Docker without sudo
+sudo usermod -aG docker ec2-user
 
-# Install Elasticsearch, Kibana, and Logstash
-sudo yum install -y elasticsearch kibana logstash
+# Install Docker Compose
+DOCKER_COMPOSE_VERSION=$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")')
+sudo curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
 
-# Configure Elasticsearch
-sudo tee /etc/elasticsearch/elasticsearch.yml > /dev/null <<EOF
-network.host: localhost
-http.port: 9200
-EOF
+# Verify installation
+docker --version
+docker-compose --version
 
-# Configure Kibana
-sudo tee /etc/kibana/kibana.yml > /dev/null <<EOF
-server.port: 5601
-server.host: "0.0.0.0"
-elasticsearch.hosts: ["http://localhost:9200"]
-EOF
+# Run the docker-compose.yml file
+# Make sure to adjust the path to your docker-compose.yml file as needed
+if [ -f "docker-compose.yml" ]; then
+    docker-compose up -d
+else
+    echo "docker-compose.yml file not found in the current directory."
+fi
 
-# Enable and start Elasticsearch, Kibana, and Logstash services
-sudo systemctl daemon-reload
-sudo systemctl enable elasticsearch.service kibana.service logstash.service
-sudo systemctl start elasticsearch.service kibana.service logstash.service
-
-# Verify services are running (optional logging)
-echo "Checking service statuses..."
-sudo systemctl status elasticsearch.service || echo "Elasticsearch failed to start."
-sudo systemctl status kibana.service || echo "Kibana failed to start."
-sudo systemctl status logstash.service || echo "Logstash failed to start."
-
-# Output Kibana access URL
-echo "ELK stack setup complete. Access Kibana at http://$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4):5601"
+echo "Docker and Docker Compose installation complete."
