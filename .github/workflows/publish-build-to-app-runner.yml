@@ -23,10 +23,11 @@ jobs:
       - name: Deploy to App Runner
         uses: awslabs/amazon-app-runner-deploy@main
         with:
+          access-role-arn: arn:aws:iam::216989131346:role/GitHubActionsRole
           service: github-actions-testing-service
           image: ${{ steps.login-ecr.outputs.registry }}/github-actions-testing/containers:${{ github.sha }}
           region: eu-west-2
           cpu: 1
           memory: 2
           port: 80
-          wait-for-service-stability: true
+          wait-for-service-stability-seconds: 120
