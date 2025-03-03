@@ -1,11 +1,17 @@
 #!/bin/bash
 
+#!/bin/bash
+
 # Update the system
 sudo yum update -y
 
 # Install Docker
-sudo amazon-linux-extras install docker -y
+sudo yum install -y docker
+
+# Start the Docker service
 sudo systemctl start docker
+
+# Enable Docker to start on boot
 sudo systemctl enable docker
 
 # Add ec2-user to the docker group to run Docker without sudo
@@ -23,7 +29,7 @@ docker-compose --version
 # Run the docker-compose.yml file
 # Make sure to adjust the path to your docker-compose.yml file as needed
 if [ -f "docker-compose.yml" ]; then
-    docker-compose up -d
+    sudo docker-compose up -d
 else
     echo "docker-compose.yml file not found in the current directory."
 fi
