@@ -23,7 +23,7 @@ jobs:
       - name: Deploy to App Runner
         uses: awslabs/amazon-app-runner-deploy@main
         with:
-          access-role-arn: arn:aws:iam::216989131346:role/GitHubActionsRole
+          access-role-arn: arn:aws:iam::216989131346:role/service-role/AppRunnerECRAccessRole
           service: github-actions-testing-service
           image: ${{ steps.login-ecr.outputs.registry }}/github-actions-testing/containers:${{ github.sha }}
           region: eu-west-2
