@@ -8,7 +8,7 @@ interface ButtonProps {
 const Button: React.FC<PropsWithChildren<ButtonProps>> = ({ onClick, label, children }) => {
     return (
         <button onClick={onClick}>
-            {label || children}
+            {label || children} This is a button
         </button>
     );
 };
