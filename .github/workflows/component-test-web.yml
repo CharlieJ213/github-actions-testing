@@ -1,4 +1,4 @@
-name: component-test-web
+name: Component Test Web Application
 
 on:
   workflow_call:

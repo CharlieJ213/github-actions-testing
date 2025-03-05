@@ -1,4 +1,4 @@
-name: unit-test-web
+name: Unit Test Web Application
 
 on:
   workflow_call:

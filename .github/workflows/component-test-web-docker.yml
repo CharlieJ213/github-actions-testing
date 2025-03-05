@@ -1,7 +1,16 @@
-name: component-test-web-docker
+name: Component Test Web Docker Image
 
 on:
   workflow_call:
+    inputs:
+      repository-for-image:
+        type: string
+        description: 'The ECR repository to push the image to'
+        required: true
+      region:
+        type: string
+        description: 'The AWS region to deploy to'
+        required: true
 
 jobs:
   test:
@@ -15,8 +24,8 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: arn:aws:iam::216989131346:role/GitHubActionsRole
-          aws-region: eu-west-2
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ inputs.region }}
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -24,8 +33,8 @@ jobs:
       
       - name: Pull and run Docker image
         run: |
-          docker pull ${{ steps.login-ecr.outputs.registry }}/github-actions-testing/containers:${{ github.sha }}
-          docker run -d -p 8080:80 --name myapp ${{ steps.login-ecr.outputs.registry }}/github-actions-testing/containers:${{ github.sha }}
+          docker pull ${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository-for-image }}:${{ github.sha }}
+          docker run -d -p 8080:80 --name myapp ${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository-for-image }}:${{ github.sha }}
       
       - name: Wait for Docker container to be ready
         run: |
