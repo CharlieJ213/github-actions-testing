@@ -1,5 +1,7 @@
 # React + TypeScript + Vite
 
+![Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/CharlieJ213/a1b4894b0f9c40bee92900225b43f0d8/raw/coverage.json)
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
