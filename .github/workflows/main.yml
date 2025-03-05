@@ -11,15 +11,7 @@ jobs:
       contents: read
       pull-requests: write
 
-  build:
-    needs: unit-tests
-    uses: ./.github/workflows/build-web.yml
-    permissions:
-      contents: read
-      packages: write
-          
   component-tests:
-    needs: build
     uses: ./.github/workflows/component-test-web.yml
     permissions:
       packages: read
