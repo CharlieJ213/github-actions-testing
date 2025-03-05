@@ -20,6 +20,10 @@ jobs:
         run: |
           COVERAGE=$(node -e "console.log(JSON.parse(require('fs').readFileSync('coverage/coverage-summary.json', 'utf8')).total.lines.pct)")
           echo "percentage=$COVERAGE" >> $GITHUB_OUTPUT
+      - name: Validate Gist Access
+        run: |
+          curl -H "Authorization: token ${{ secrets.GIST_SECRET }}" \
+           https://api.github.com/gists/${{ vars.GIST_ID }}
       - name: Update Badge in Gist
         uses: schneegans/dynamic-badges-action@v1.6.0
         with:
